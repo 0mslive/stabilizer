@@ -20,18 +20,65 @@ HOW I STABILIZE A LIVE SOUND VST HOST PC (version 0.1.0, April 07, 2026)
 <a href="https://forums.guru3d.com/threads/windows-power-plan-settings-explorer-utility.416058/" target="_blank">https://forums.guru3d.com/threads/windows-power-plan-settings-explorer-utility.416058/</a>
 <a href="https://www.techpowerup.com/download/microsoft-interrupt-affinity-tool" target="_blank">https://www.techpowerup.com/download/microsoft-interrupt-affinity-tool/</a>
 
+=========== TEST RESULT
+= USB
+4 instances : safe mode 16 samples buffer stable RTL 5.7ms
+8 instances : safe mode 32 samples buffer stable RTL 5.9ms
+12 instances : safe mode 64 samples buffer stable RTL 6.6ms
+16 instances : safe mode 128 samples buffer stable RTL 10.9ms
+
+= SoundGrid (LV1) 48Khz
+4 instances : 64 samples buffer stable RTL 3.4ms (Server in&out 0.8ms + Driver in&out 2.2ms + 64 samples 1.33ms)
+8 instances : 128 samples buffer stable RTL 5.7ms (Server in&out 0.8ms + Driver in&out 2.2ms + 128 samples 2.67ms)
+16 instances : 256 samples buffer stable RTL 8.4ms (Server in&out 0.8ms + Driver in&out 2.2ms + 256 samples 5.33ms)
+  
+= Audio Interface
+Midas MR18 USB driver 5.72 (Midas M32, Behringer Wing, X32, XR18 has the same driver)
+Focusrite Scarlett 2i2 3rd (only 2 instances test)
+
+= HOST PC
+Intel NUC 12 i5-1240p, 16GB
+AMD 8845HS mini PC, 16GB
+both has the same performance result
+8GB is not stable for 16 instances
+
+= OS
+Windows 11 IoT Enterprise LTSC 2024 24H2 - 26100.1742
+Windows 11 Pro 25H2 - 26200.6584 (Sep 2025)
+both has the same performance result
+
+= VST3 Host Software
+I have tested
+VSTHost, Live Professor 2, Cantabile, Reaper, Kushview Element, Tone2 Nanohost, Steinberg VST Live Pro 3, Blue Cat PatchWork, Gig Performer
+are NOT STABLE for 16 instances.
+Most softwares starts crackle over 5 or 6 instances on my PC.
+ONLY Waves SuperRack Performer passed 16 instances test.
+SuperRack Performer has the best multi-core thread management in my research.
+I really hate Waves products that use Microsoft Webview2 UI but there's no other option.
+
+= Test method
+dual sign signal generator 250hz, 1khz from https://www.signalperspective.com/test-signal-generator/
+very reverby church speech from random Youtube like https://www.youtube.com/watch?v=zbKXkpiLcfk
+listening at least over an hour (I am not a christian)
+
+  
 ========== BIOS
 I prefer loading recommended or preferred settings from the hardware manufacturer
 but only set the CPU fan to 100% ALL THE TIME. (IMPORTANT)
+
 I don't have to setup any other settings like C states, Turbo, TDP, etc
 because I can adjust those settings on Windows, not on BIOS.
 Check the "Processor power management" stage below.
+  
+CPU COOLING is an important key if you want to push your PC harder especially for mini PCs.
+Automatic fan speed increase based on CPU temperature is already too late for a Live sound host system.
+The CPU temperature must remain sufficiently low before it starts to rise and produce audio crackles already.
 
 ========== Install Windows with Answer file (autounattend.xml) to debloat Windows 11 during installation
 What is Answer file? : <a href="https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs" target="_blank">https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs</a>
 Answer file generator : <a href="https://schneegans.de/windows/unattend-generator/" target="_blank">https://schneegans.de/windows/unattend-generator/</a>
 (very useful but some functions are outdated. for example, you can't "Disable Windows Defender" on 24H2 and 25H2)
-My autounattend.xml file : <a href="https://0ms.live/autounattend.xml" target="_blank">https://0ms.live/autounattend.xml</a> (Generic serial number is used so it can't be activated online.)
+My autounattend.xml file for Windows 11 IoT 24H2 : <a href="https://0ms.live/autounattend.xml" target="_blank">https://0ms.live/autounattend.xml</a> (Generic serial number is used so it can't be activated online.)
 <a href="https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys" target="_blank">https://learn.microsoft.com/en-us/windows-server/get-started/kms-client-activation-keys</a>
 
 I PREFER Windows 11 IoT Enterprise LTSC 2024 24H2 Build - 26100.1742
