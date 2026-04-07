@@ -1,14 +1,478 @@
-<h1>0ms.live</h1>
 
-<form action="https://www.paypal.com/donate" method="post" target="_top">
-<input type="hidden" name="hosted_button_id" value="3YN3TDYEDJPLA" />
-<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_CA/i/scr/pixel.gif" width="1" height="1" />
-</form>
+<pre>
+
+HOW I STABILIZE LIVE SOUND VST HOST PC (version 0.1.0)
+
+========== References
+https://learn.microsoft.com/en-us/sysinternals/resources/windows-internals
+https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/soft-real-time/soft-real-time-device
+https://learn.microsoft.com/en-us/windows-server/security/windows-services/security-guidelines-for-disabling-system-services-in-windows-server
+https://learn.microsoft.com/en-us/windows/privacy/manage-connections-from-windows-operating-system-components-to-microsoft-services
+https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/optimize/services
+https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/interrupt-affinity-and-priority
+
+========== Useful Websites
+https://github.com/valleyofdoom/PC-Tuning
+https://schneegans.de/windows/unattend-generator/
+https://bitsum.com/
+https://massgrave.dev/
+https://forums.guru3d.com/threads/windows-line-based-vs-message-signaled-based-interrupts-msi-tool.378044/
+https://forums.guru3d.com/threads/windows-power-plan-settings-explorer-utility.416058/
+https://www.techpowerup.com/download/microsoft-interrupt-affinity-tool/
+
+========== BIOS
+I prefer loading recommended or preferred settings from the hardware manufacturer
+but only set the CPU fan to 100% ALL THE TIME. (IMPORTANT)
+I don't have to setup any other settings like C states, Turbo, TDP, etc
+because I can adjust those settings on Windows, not on BIOS.
+Check the "Processor power management" stage below.
+
+========== Install Windows with Answer file (autounattend.xml) to debloat Windows 11 during installation
+What is Answer file? : https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs
+Answer file generator : https://schneegans.de/windows/unattend-generator/ 
+(very useful but some functions are outdated. for example, you can't "Disable Windows Defender" on 24H2)
+
+I PREFER Windows 11 IoT Enterprise LTSC 2024 24H2 Build - 26100.1742
+just because it doesn't pre-install Windows functions that I don't use on the hard drive like the Pro version does
+so I can have more 10GB free space after installing Windows.
+You can install Pro if you(or the mainboard) have a Pro license.
+It has the SAME PERFORMANCE and funtionality in my experience.
+
+https://learn.microsoft.com/en-us/windows/iot/iot-enterprise/faq#how-does-windows-iot-enterprise-differ-from-windows-pro
+
+IoT Enterprise LTSC 24H2 26100.1742 Microsoft Official download link : 
+https://oemsoc.download.prss.microsoft.com/dbazure/X23-81951_26100.1742.240906-0331.ge_release_svc_refresh_CLIENT_ENTERPRISES_OEM_x64FRE_en-us.iso_640de540-87c4-427f-be87-e6d53a3a60b4?t=2c3b664b-b119-4088-9db1-ccff72c6d22e&P1=102816950270&P2=601&P3=2&P4=OC448onxqdmdUsBUApAiE8pj1FZ%2bEPTU3%2bC6Quq29MVwMyyDUtR%2fsbiy7RdVoZOHaZRndvzeOOnIwJZ2x3%2bmP6YK9cjJSP41Lvs0SulF4SVyL5C0DdDmiWqh2QW%2bcDPj2Xp%2bMrI9NOeElSBS5kkOWP8Eiyf2VkkQFM3g5vIk3HJVvu5sWo6pFKpFv4lML%2bHaIiTSuwbPMs5xwEQTfScuTKfigNlUZPdHRMp1B3uKLgIA3r0IbRpZgHYMXEwXQ%2fSLMdDNQthpqQvz1PThVkx7ObD55CXgt0GNSAWRfjdURWb8ywWk1gT7ozAgpP%2fKNm56U5nh33WZSuMZIuO1SBM2vw%3d%3d
+
+DO NOT CONNECT TO THE INTERNET YET.
+DO NOT INSTALL ANY DEVICE DRIVERS YET.
+DO NOT INSTALL nVidia, AMD, Intel graphics or chipset driver.
+Windows 11 stock drivers are enough to make your Windows powerful.
+New drivers from manufacterers ruin stability sometimes.
+
+You can install needed drivers and connect to the Internet in the final stage below,
+or Windows will manipulate the system automatically if you connect to the Internet during the whole process.
+
+========== Disable Windows Services
+Security Health Service
+Windows Security Center Service
+Diagnostic Policy Service
+Task Scheduler
+Microsoft Defender Antivirus Service
+Microsoft Defender Core Service
+Microsoft Defender Antivirus Network Inspection Service
+Web Threat Defense Service
+Windows Search
+Microsoft Edge Update Service (edgeupdate)
+Microsoft Edge Update Service (edgeupdatem)
+Microsoft Edge Elevation Service (MicrosoftEdgeElevationService)
+Windows Audio
+Windows Audio Endpoint Builder
+Windows Update
+Print Spooler
+Themes
+Windows Event Log
+Windows Push Notifications System Service
+COM+ Event System
+Update Orchestrator Service
+SysMain
+Connected User Experiences and Telemetry
+Program Compatibility Assistant Service
+Windows Error Reporting Service
+Geolocation Service
+Retail Demo Experience
+Windows Insider Service
+Phone Service
+Wallet Service
+Smart Card
+Smart Card Device Enumeration Service
+Smart Card Removal Policy
+Downloaded Maps Manager
+Windows Fax and Scan
+Windows Media Player Network Sharing Service
+Mixed Reality OpenXR Runtime
+Windows Mobile Hotspot Service
+Microsoft Windows SMS Router Service
+Parental Controls
+Payments and NFC/SE Manager
+Spot Verifier
+Remote Access Auto Connection Manager
+Remote Access Connection Manager
+Xbox Live Auth Manager
+Xbox Live Game Save
+Xbox Live Networking Service
+Windows Biometric Service
+Sensor Monitoring Service
+Sensor Data Service
+HV Host Service
+Portable Device Enumerator Service
+Windows Biometric Service
+Delivery Optimization
+Connected User Experiences and Telemetry
+Storage Service
+BitLocker Drive Encryption Service
+Data Usage
+Program Compatibility Assistant Service
+Shell Hardware Detection
+Workstation
+Bluetooth Audio Gateway Service
+Bluetooth Support Service
+Human Interface Device Service
+Secure Socket Tunneling Protocol Service
+WSAIFabricSvc
+Windows Health and Optimized Experiences
+Print Device Configuration Service
+Windows Font Cache Service
+Server
+Bluetooth AVCTP service
+Microsoft Store Install Service
+Windows Camera Frame Server
+Windows Camera Frame Server Monitor
+Display Enhancement Service
+SSDP Discovery
+Distributed Link Tracking Client
+
+========== Windows Tweak (turn on or off the function)
+Save your session to disk and power down completely, using no battery while preserving your work
+Hibernate system state during shutdown for faster boot times (does not affect restart)
+Display the Hibernate option in the Start Menu power button menu
+Automatically reduces CPU performance for background processes to improve battery life and reduce heat generation
+Display the Lock option in the Start Menu power button menu
+Display the Sleep option in the Start Menu power button menu
+Allow apps to receive notifications, update data, and perform tasks even when not actively in use
+Automatically free up disk space by removing temporary files, emptying the recycle bin, and managing downloads
+Show all notifications from Windows Security about threats, scans, and protection status
+Controls UAC notification level and secure desktop behavior
+Blocks the 'Allow my organization to manage my device' and 'No, sign in to this app only' pop-up messages
+Prevents Windows from automatically encrypting your device with BitLocker without user consent
+Allow sharing WiFi passwords with contacts and automatically connecting to suggested open hotspots
+Choose if Windows should run automatic system maintenance tasks during idle time
+Choose if Windows should collect and send crash reports and error information to Microsoft
+Choose if other people can connect to your computer remotely to provide technical support
+Allows users to lock their computer using Windows+L, Start menu, or Ctrl+Alt+Del screen
+Windows generates a unique advertising ID that apps use to track your activity and deliver personalized ads based on your behavior across different apps
+Use your voice for apps using Microsoft's online speech recognition technology
+Send diagnostic data to Microsoft to help improve Windows and keep it secure
+Let Microsoft use your diagnostic data to show personalized tips, ads and recommendations
+Let Windows ask you to provide feedback on experiences in Windows
+Enables Microsoft's Cortana virtual assistant for voice commands and searches
+Allows Windows and apps to access your device location for location-based features
+Allow apps to have camera access
+Allow apps to have microphone access
+Allow apps to have account info access
+Allow apps to have app diagnostic access
+Prevents OneDrive from automatically backing up important folders (Documents, Pictures, Desktop, etc.)
+Play the Windows startup sound when your computer boots up
+Allow apps to listen and respond to voice commands like 'Hey Cortana'
+Remember and apply the most recently used voice activation configuration
+Displays the Windows Terminal option when right-clicking folders and backgrounds in File Explorer
+Display the Home folder in the navigation panel as a shortcut to your user profile folder
+Display the Gallery folder in the navigation panel for quick access to all your photos and videos
+Enables support for file paths with up to 32,767 characters instead of the traditional 260-character limit
+Show or hide the lower section that displays recently opened files and suggested apps. Hiding this section also removes Windows Spotlight from the lock screen and suggested content in the Settings app
+Prevent web results from Bing from appearing when searching in the Start Menu, showing only local files and apps
+Show the Widgets button that displays personalized news, weather, calendar, and other information
+GlobalUserDisabled
+BackgroundAppGlobalToggle
+Optimize your PC for play by turning things off in the background
+Adjust cursor speed based on movement velocity (mouse acceleration). Most competitive gamers disable this for consistent aiming in FPS games
+Delay startup applications by 10 seconds after boot to improve initial system responsiveness. Windows becomes usable faster, but your startup apps take longer to load
+Allow apps to receive notifications, update data, and perform tasks even when not actively in use
+Automatically free up disk space by removing temporary files, emptying the recycle bin, and managing downloads
+Search your entire file system instead of only indexed locations. This provides more complete results but is significantly slower than indexed search and increases disk activity
+Allow Windows to compress wallpapers to save disk space and improve performance. Only affects images in JPEG format.
+Add a brief delay before displaying menus (400ms - Windows default), or show them instantly (0ms) for faster navigation
+Show only traditional open windows in Alt+Tab instead of including Microsoft Edge tabs and other Windows suggestions
+Reduce latency and use advanced features in compatible games by using DirectX flip presentation model
+Enable VRR (G-Sync/FreeSync) optimizations for smoother gameplay. Requires a VRR-compatible monitor; this setting has no effect if your monitor does not support VRR
+Automatically convert SDR content to HDR for enhanced colors and brightness. Requires an HDR-capable display with HDR enabled; this setting has no effect if your display does not support HDR
+Allow Windows to optimize games running in fullscreen mode. Disabling can fix performance issues or stuttering in some older games that don't work well with borderless fullscreen optimization
+Enable visual effects managed by the Desktop Window Manager. Disabling may provide minor performance gains on older hardware but will break Aero effects
+Record gameplay clips and take screenshots using the Xbox Game Bar overlay. Disabling reduces CPU/GPU usage and can improve frame rates
+Allow your Xbox/compatible controller to open Game Bar by pressing the Xbox button. Disable to prevent accidental Game Bar activation during gaming
+Show tips and hints about Game Bar features when opening the overlay. Disabling reduces distractions during gameplay
+Choose how Windows displays visual effects
+Shows smooth animation when windows are minimized or maximized
+Controls taskbar animation effects for opening, closing, and switching windows
+Allows peeking at desktop when hovering over Show Desktop button
+Saves thumbnail previews of taskbar windows for faster display
+Displays image and document previews instead of generic file icons
+Display a semi-transparent selection box when dragging to select multiple files or items
+Displays window contents when dragging instead of just an outline
+Apply anti-aliasing to text for smoother, more readable fonts on screen
+Add shadow effects behind desktop icon text to improve readability against backgrounds
+Enable the Win+Ctrl+Enter keyboard shortcut to quickly launch Windows Narrator screen reader
+Enable the keyboard shortcut to activate StickyKeys by pressing the Shift key five times
+Enable the keyboard shortcut to activate FilterKeys by holding the right Shift key for 8 seconds
+Enable the keyboard shortcut to activate ToggleKeys by holding Num Lock for 5 seconds, which plays sounds when Caps/Num/Scroll Lock are pressed
+Enable the keyboard shortcut to activate MouseKeys, which allows using the numeric keypad to control the mouse pointer
+Enable the keyboard shortcut to activate High Contrast mode by pressing Left Alt + Left Shift + Print Screen
+Get notifications from apps and other senders in Windows
+Play audio alerts when notifications arrive from apps and system senders
+Display toast notifications on the lock screen when your device is locked
+Display critical notifications like reminders and VoIP calls when your device is locked
+Display the notification bell icon in the system tray
+Show what's new and suggested after updates and when signed in
+Show suggestions to help you complete device setup and optimize Windows features
+Show helpful tips and suggestions while using Windows
+Display helpful suggestions in the Action Center and Notification Center
+Show notifications when apps request access to system capabilities and permissions
+Show notifications when apps are added to your Windows startup list
+Show notifications when apps attempt to access your location information
+Show notifications when daylight saving time changes occur
+Show all notifications from Windows Security about threats, scans, and protection status
+Show notifications from the Security and Maintenance Action Center
+Blocks the 'Allow my organization to manage my device' and 'No, sign in to this app only' pop-up messages
+Choose if Windows should collect and send crash reports and error information to Microsoft
+Controls all advertising, suggestions, and promotional content throughout Windows
+Allows Windows to deliver promotional content and automatically install suggested apps
+Enables promotional content subscriptions from Microsoft and partners throughout Windows
+Enables Windows feature management functionality for promotional features and automatic app installations
+Displays tips and notifications about Windows features as you use the operating system
+Prevents OEM manufacturers from automatically installing bloatware apps
+Prevents Microsoft from automatically installing suggested apps
+Disables tracking of whether pre-installed apps were ever enabled
+Prevents apps from being silently installed in the background
+Displays rotating Windows Spotlight images on your lock screen instead of a static background. Winhance automatically sets the Start Menu Recommended Section to Show when this setting is enabled as it is required
+Displays fun facts, tips, and tricks as an overlay on your lock screen
+Windows generates a unique advertising ID that apps use to track your activity and deliver personalized ads based on your behavior across different apps
+Allows websites to access your language preferences so they can automatically display content in your preferred language without requiring manual configuration on each site
+Windows records which apps you use most frequently to personalize your Start menu and improve search results, making your most-used apps more accessible
+Displays promotional content, tips, and feature suggestions within the Windows Settings app. Winhance automatically sets the Start Menu Recommended Section to Show when this setting is enabled as it is required
+Shows account notifications in the Settings app, including prompts to reauthenticate, backup your device, and manage subscriptions
+Use your voice for apps using Microsoft's online speech recognition technology
+Allow Narrator to use Microsoft cloud services for features like intelligent image descriptions and enhanced voice models
+Allow Narrator to execute scripts for automation and custom functionality
+Uses your typing history and handwriting patterns to create a custom dictionary (turning off will clear all words in your custom dictionary)
+Send diagnostic data to Microsoft to help improve Windows and keep it secure
+Send optional inking and typing diagnostic data to Microsoft
+Let Microsoft use your diagnostic data to show personalized tips, ads and recommendations
+Let Windows ask you to provide feedback on experiences in Windows
+Improves search results by allowing Windows Search to store your search history locally on this device (Does not clear existing history)
+See content suggestions in search
+Allow Windows Search to show results from apps and services that you are signed in to with your Microsoft account
+Allow Windows Search to show results from apps and services that you are signed in to with your work or school account
+Enables Microsoft's Cortana virtual assistant for voice commands and searches
+Allows Windows and apps to access your device location for location-based features
+Prevents OneDrive from automatically backing up important folders (Documents, Pictures, Desktop, etc.)
+Automatically lower volume of media and apps when Windows detects communication activity
+Allow Narrator to automatically lower the volume of other applications when it speaks
+Play sounds when accessibility features like StickyKeys or FilterKeys are activated
+Play warning sounds when attempting to activate accessibility features or when accessibility-related events occur
+Share downloaded updates with other PCs on your network or the internet to reduce bandwidth usage
+Prevents automatic restarts after installing updates when users are logged on
+Show or hide notifications about available updates and update progress
+Prevent Windows from automatically downloading and installing hardware driver updates
+Automatically download and install updates for apps from the Microsoft Store
+Prevents Windows from appending '- Shortcut' text to newly created shortcut file names
+Allow Windows Dynamic Lighting to control ambient RGB effects on compatible devices
+Allow compatible apps to control device lighting effects
+Prevents Windows from automatically changing your default printer based on location or last used printer
+Choose what happens when File Explorer is opened
+Displays recently accessed files and recommendations in Quick Access
+Displays your most accessed folders in Quick Access section
+Displays cloud files from your Office.com account in Quick Access
+Displays generic file icons instead of image/document previews
+TaskbarGlomLevel
+Reduces vertical spacing between files and folders for denser view
+Shows file type icon overlay on bottom-right corner of thumbnail previews
+Shows total size and file count when hovering over folders
+Shows complete directory path in window title instead of folder name only
+Displays items with the hidden attribute set
+Hides drives with no media inserted like empty card readers or optical drives
+Displays file type extensions (like .txt, .pdf) after file names
+Automatically merges folders with same name without confirmation dialog
+Displays system files marked with the SuperHidden attribute
+Runs each Explorer window in its own process to prevent crashes affecting all windows
+Reopens Explorer windows that were open when you last shut down or logged off
+Displays drive letters (C:, D:) before drive names in This PC
+Displays encrypted files in green and compressed files in blue
+Displays tooltip with item details when hovering over files and folders
+Enables file content preview when selecting files in Explorer
+Displays bar at bottom showing item count and selected file sizes
+Displays cloud sync status notifications from OneDrive and other sync providers
+Adds checkboxes next to items for easier multi-selection
+Shows simplified sharing dialog instead of advanced security permissions
+Chooses whether typing selects matching items or searches automatically
+Shows cloud sync status icons for OneDrive files in navigation panel
+Automatically expands navigation tree to highlight current folder location
+Shows all folders in the navigation panel
+Show or hide the lower section that displays recently opened files and suggested apps. Hiding this section also removes Windows Spotlight from the lock screen and suggested content in the Settings app
+Display a list of recently installed applications at the top of the All Apps list
+Display your frequently launched applications at the top of the All Apps list for quick access
+Display your recently opened documents and files in the Start Menu's Recommended section for quick access
+Display personalized suggestions from Windows for tips, app shortcuts, and Microsoft Store apps in the Recommended section
+Display notifications about Microsoft account sign-in, sync status, and account-related suggestions
+Prevent web results from Bing from appearing when searching in the Start Menu, showing only local files and apps
+Choose how the Windows search appears on your taskbar: hidden, icon only, icon with label, or full search box
+Align taskbar icons to the left (classic Windows style) or center (Windows 11 default)
+Show the Task View button for managing virtual desktops and viewing all open windows at once
+Show the Widgets button that displays personalized news, weather, calendar, and other information
+Adds an 'End Task' option when right-clicking applications on the taskbar for quick termination
+Hide Clock
+Choose between Light and Dark mode for Windows and apps
+Enable translucent effects for the Start Menu, taskbar, and other Windows interface elements
+
+========== System Power Settings & Options
+Enable Ultimate Power Option
+Disable Hibernation
+Disable USB Selective Suspend
+
+Interrupt Steering Settings
+Interrupt Steering Mode
+Target Load
+Unparked time trigger
+
+Power buttons and lid
+Power button action
+
+USB settings
+USB selective suspend setting
+Setting IOC on all TDs
+USB 3 Link Power Mangement
+
+Idle Resiliency
+Execution Required power request timeout
+IO coalescing timeout
+Processor Idle Resiliency Timer Resolution
+Deep Sleep Enabled/Disabled
+
+PCI Express
+Link State Power Management
+
+========== Processor power management
+Processor performance increase threshold                                                                                   
+Processor performance increase threshold for Processor Power Efficiency Class 1                                           
+Processor performance core parking min cores                                                                               
+Processor performance core parking min cores for Processor Power Efficiency Class 1                                       
+Processor performance decrease threshold                                                                                   
+Processor performance decrease threshold for Processor Power Efficiency Class 1                                           
+Initial performance for Processor Power Efficiency Class 1 when unparked                                                  
+Processor performance core parking concurrency threshold                                                                   
+Processor performance core parking increase time                                                                           
+Processor energy performance preference policy                                                                             
+Processor energy performance preference policy for Processor Power Efficiency Class 1                                     
+Allow Throttle States                                                                                                        
+Processor performance increase time for Processor Power Efficiency Class 1                                                
+Processor performance decrease policy                                                                                        
+Processor performance decrease policy for Processor Power Efficiency Class 1                                                
+Long running threads' processor architecture lower limit                                                                  
+Processor performance core parking parked performance state                                                                  
+Processor performance core parking parked performance state for Processor Power Efficiency Class 1                          
+Processor performance boost policy                                                                                         
+Processor performance increase policy                                                                                        
+Processor performance increase policy for Processor Power Efficiency Class 1                                                
+Processor idle demote threshold                                                                                            
+Processor performance core parking distribution threshold                                                                  
+Processor performance time check interval                                                                                  
+Processor duty cycling                                                                                                       
+Short running threads' processor architecture lower limit                                                                 
+Processor idle disable                                                                                                       
+Latency sensitivity hint min unparked cores/packages                                                                       
+Latency sensitivity hint min unparked cores/packages for Processor Power Efficiency Class 1                               
+Latency sensitivity hint processor performance                                                                             
+Latency sensitivity hint processor performance for Processor Power Efficiency Class 1                                     
+Processor idle threshold scaling                                                                                             
+Processor performance core parking decrease policy                                                                           
+Maximum processor frequency                                                                                                
+Maximum processor frequency for Processor Power Efficiency Class 1                                                        
+Processor idle promote threshold                                                                                           
+Processor performance history count                                                                                        
+Processor performance history count for Processor Power Efficiency Class 1                                                
+Processor performance decrease time for Processor Power Efficiency Class 1                                                
+Heterogeneous policy in effect                                                                                              
+Short running threads' processor architecture upper limit                                                                 
+Minimum processor state                                                                                                    
+Minimum processor state for Processor Power Efficiency Class 1                                                            
+Processor performance autonomous mode                                                                                        
+Heterogeneous thread scheduling policy                                                                                      
+Processor performance core parking overutilization threshold                                                               
+System cooling policy                                                                                                        
+Processor performance core parking soft park latency                                                                       
+Processor performance increase time                                                                                        
+Processor performance increase time for Processor Power Efficiency Class 1                                                
+Processor idle state maximum                                                                                               
+Processor performance level increase threshold for Processor Power Efficiency Class 1 processor count increase              
+Processor performance level increase threshold for Processor Power Efficiency Class 2 processor count increase              
+Module unpark policy                                                                                                        
+Smt threads unpark policy                                                                                                   
+Complex unpark policy                                                                                                       
+Heterogeneous short running thread scheduling policy                                                                        
+Maximum processor state                                                                                                    
+Maximum processor state for Processor Power Efficiency Class 1                                                            
+Processor performance boost mode                                                                                             
+Long running threads' processor architecture upper limit                                                                  
+Processor idle time check                                                                                                  
+Processor performance core parking increase policy                                                                           
+Processor autonomous activity window                                                                                       
+Processor performance decrease time                                                                                        
+Processor performance decrease time for Processor Power Efficiency Class 1                                                
+Short vs. long running thread threshold                                                                                   
+Processor performance core parking decrease time                                                                           
+Processor performance core parking utility distribution                                                                      
+Processor performance core parking max cores                                                                               
+Processor performance core parking max cores for Processor Power Efficiency Class 1                                       
+Processor performance core parking concurrency headroom threshold                                                          
+Processor performance level decrease threshold for Processor Power Efficiency Class 1 processor count decrease              
+Processor performance level decrease threshold for Processor Power Efficiency Class 2 processor count decrease              
+A floor performance for Processor Power Efficiency Class 0 when there are Processor Power Efficiency Class 1 processors   
+
+========== System Tweak
+Disable Memory Paging
+Enable Remote Desktop login without password
+Disable Auto Driver Update
+PriorityControl Win32PrioritySeparation
+Disable Computer Restore
+Disable USB Power management
+Disable Write-caching policy
 
 
-<p>Intel network driver download</p>
-<a href="https://www.intel.com/content/www/us/en/download/727998/intel-network-adapter-driver-for-microsoft-windows-11.html">https://www.intel.com/content/www/us/en/download/727998/intel-network-adapter-driver-for-microsoft-windows-11.html</a>
-<p></p>
-<p>Intel Wi-Fi driver download</p>
-<a href="https://www.intel.com/content/www/us/en/download/19351/intel-wireless-wi-fi-drivers-for-windows-10-and-windows-11.html">https://www.intel.com/content/www/us/en/download/19351/intel-wireless-wi-fi-drivers-for-windows-10-and-windows-11.html</a>
+========== Kernel DPC settings
+DpcWatchdogProfileOffset
+DpcTimeout
+IdealDpcRate
+MaximumDpcQueueDepth
+MinimumDpcRate
+DpcWatchdogPeriod
+UnlimitDpcQueue
+ThreadDpcEnable
+
+========== Latency settings
+ExitLatency
+Latency
+LatencyToleranceDefault
+LatencyToleranceFSVP
+LatencyTolerancePerfOverride
+LatencyToleranceScreenOffIR
+RtlCapabilityCheckLatency
+
+========== Disable auto-generated Windows Services every session
+Web Threat Defense User Service
+Now Playing Session Manager
+Devices Flow
+DevicesFlowUserSvc
+Connected Devices Platform User Service
+Windows Error Reporting Service
+Wi-Fi Direct Services Connection Manager Service
+OneSyncSvc
+Windows Push Notifications User Service
+Udk User Service
+Clipboard User Service
+
+========== Install VST Host Program
+Install Audio Interface driver
+Install Wi-Fi driver
+Install Network device driver
+Install VST Host Program 
+(Waves SuperRack Performer has the best multi-core processor scheduling)
+Install Plug-ins
+Connect to the Internet to get licenses needed : VST Host Program, Plug-ins, Windows
+
+========== Setup CPU Affinity
+System devices Interrupt Affinity and device Priority
+Audio device Interrupt Affinity and device Priority
+Wi-fi device Interrupt Affinity and device Priority
+Network device Interrupt Affinity and device Priority
+System Processes Processor Affinity
+VST Host program Processor Affinity and Process Priority Class
+
+</pre>
